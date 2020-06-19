@@ -19,18 +19,23 @@ export default function App() {
     api.get("repositories").then((response) => {
       setRepositories(response.data);
     });
-  }, [handleLikeRepository]);
+  }, []);
 
   async function handleLikeRepository(id) {
-    api.post(`repositories/${id}/like`).then((response) => {
-      if (response.status === 200) {
-        const repoIndex = repositories.findIndex(
-          (repository) => repository.id === id
-        );
-        repositories[repoIndex] = response.data;
-        setRepositories(repositories);
-      }
-    });
+    const response = await api.post(`repositories/${id}/like`);
+    if (response.status === 200) {
+      const repository = response.data;
+      const repos = repositories.map((repo) =>
+        repo.id === id ? repository : repo
+      );
+      setRepositories(repos);
+    }
+    // const repoIndex = repositories.findIndex(
+    //   (repository) => repository.id === id
+    // );
+    // repositories[repoIndex] = response.data;
+    // setRepositories(repositories);
+    // }
   }
 
   return (
